@@ -1,3 +1,9 @@
+/*
+Written by Perseus06
+
+To compile with gcc: gcc hermes.c -o hermes.exe
+*/
+
 #include <stdio.h>
 #include <windows.h>
 #include <tlHelp32.h>
