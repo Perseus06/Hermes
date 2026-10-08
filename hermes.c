@@ -54,18 +54,18 @@ int GetProcessName(unsigned int GivenPID)
 // function for getting SeDebug privilege.
 int GetSeDebug()
 {
-	// get a handle to the program process (memorings)
-	int memoringsPID, IsSucceeded;
-	memoringsPID = GetCurrentProcessId();
-	HANDLE memoringsHandle = OpenProcess(PROCESS_QUERY_INFORMATION, 0, memoringsPID);
-	if (memoringsHandle == INVALID_HANDLE_VALUE || memoringsHandle == NULL)
+	// get a handle to the program process (Hermes)
+	int HermesPID, IsSucceeded;
+	HermesPID = GetCurrentProcessId();
+	HANDLE HermesHandle = OpenProcess(PROCESS_QUERY_INFORMATION, 0, HermesPID);
+	if (HermesHandle == INVALID_HANDLE_VALUE || HermesHandle == NULL)
 	{
 		return -1;
 	}
 
-	// get handle to the token of the memorings process.
-	HANDLE memoringsToken;
-	IsSucceeded = OpenProcessToken(memoringsHandle, TOKEN_ADJUST_PRIVILEGES, &memoringsToken);
+	// get handle to the token of the Hermes process.
+	HANDLE HermesToken;
+	IsSucceeded = OpenProcessToken(HermesHandle, TOKEN_ADJUST_PRIVILEGES, &HermesToken);
 	if (IsSucceeded == 0)
 	{
 		return -1;
@@ -80,11 +80,11 @@ int GetSeDebug()
 	}
 	DebugPrivilege.Attributes = SE_PRIVILEGE_ENABLED;
 
-	// get SeDebugPrivilege to the memorings process.
+	// get SeDebugPrivilege to the Hermes process.
 	TOKEN_PRIVILEGES NewPrivileges;
 	NewPrivileges.PrivilegeCount = 1;
 	NewPrivileges.Privileges[0] = DebugPrivilege;
-	IsSucceeded = AdjustTokenPrivileges(memoringsToken, 0, &NewPrivileges, 0, NULL, NULL);
+	IsSucceeded = AdjustTokenPrivileges(HermesToken, 0, &NewPrivileges, 0, NULL, NULL);
 	if (IsSucceeded == 0)
 	{
 		return -1;
@@ -230,13 +230,13 @@ void AnalyzeProcessMemory(HANDLE ProcessHandle, int StringMinimalLength)
 
 int main(int argc, char* argv[])
 {
-	// arguments parsing for executing memorings properly.
+	// arguments parsing for executing Hermes properly.
 	int GivenPID, StringMinimalLength;
 
 	// no PID was given - the program cannot be executed.
 	if (argc<2)
 	{
-		printf("\nERROR - no PID was given as argument.\nUsage: memorings.exe <PID of remote process> (for example: memorings.exe 1462).\n\n");
+		printf("\nERROR - no PID was given as argument.\nUsage: Hermes.exe <PID of remote process> (for example: Hermes.exe 1462).\n\n");
 		exit(1);
 	}
 
@@ -262,7 +262,7 @@ int main(int argc, char* argv[])
 		}
 		else
 		{
-			printf("\nERROR - could not parse the given arguments.\n\nUsage: memorings.exe (-n <string minimal length>) <PID of process>.\n\nExamples:\nmemorings.exe 11448\nmemorings.exe -n 6 2245\nmemorings.exe 9471 -n 12\n\n");
+			printf("\nERROR - could not parse the given arguments.\n\nUsage: Hermes.exe (-n <string minimal length>) <PID of process>.\n\nExamples:\nHermes.exe 11448\nHermes.exe -n 6 2245\nHermes.exe 9471 -n 12\n\n");
 			exit(1);
 		}
 	}
